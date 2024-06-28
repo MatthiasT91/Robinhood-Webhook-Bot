@@ -9,7 +9,7 @@ Setup:
 ------
 Environment Variables:
 
-1. Rename the `example.env` to `config.env` file:
+1. Rename the `example.ini` to `config.ini` file:
     USERNAME=your_robinhood_username
     PASSWORD=your_robinhood_password
     ACCOUNTID=your_robinhood_account_number
