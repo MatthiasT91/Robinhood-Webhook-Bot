@@ -24,6 +24,6 @@ def handle_webhook():
         return jsonify({'error': str(e)}), 500  # Handle errors gracefully
 
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))  # Ensure correct port binding
+    port = int(os.environ.get('PORT', 8080))  # Ensure correct port binding
     print(f"Starting app on port {port}")
     socketio.run(app, host='0.0.0.0', port=port)
