@@ -84,6 +84,7 @@ def find_options(position=None, cOrd=None,
                  price=None, type=None, ac=None, 
                  info=None
                  ):
+    
     rh_login()
 
     print(price)
@@ -116,15 +117,18 @@ def find_options(position=None, cOrd=None,
         delta = filtered_options_load[0]['delta']
         im_vol = filtered_options_load[0]['implied_volatility']
         theta = filtered_options_load[0]['theta']
-        buy_options_limit(positionEffect=position,credOrdeb=cOrd,price=ask,
+        buying = buy_options_limit(positionEffect=position,credOrdeb=cOrd,price=ask,
                           symbol=symbol,quantity=qtity,expirationDate=date,
                           strike=strike,ot=type,an=ac)
-        time.sleep(30)
-        print(ask)
-        print(bid)
-        stop_limit(positionEffect='close',creditOrDebit='credit',limitPrice=.02,
-                   stopPrice=0.01,symbol=symbol,quantity=1,
-                   expirationDate=date,strike=strike,ac=ac,type=type)
+        print(buying)
+        time.sleep(600)
+        if ask >= 0.10:
+            
+            print(ask)
+            print(bid)
+            stop_limit(positionEffect='close',creditOrDebit='credit',limitPrice=.02,
+                       stopPrice=0.01,symbol=symbol,quantity=1,
+                       expirationDate=date,strike=strike,ac=ac,type=type)
     else:
         symbol = filtered_options_load[0]['chain_symbol']
         date = filtered_options_load[0]['expiration_date']
