@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 import os
 
 
-load_dotenv()
+load_dotenv('config.env')
 
 
 def discord_message(messages):
