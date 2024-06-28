@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 from flask_socketio import SocketIO, emit
 
 app = Flask(__name__)
-socketio = SocketIO(app, async_mode='eventlet')
+socketio = SocketIO(app, async_mode='eventlet')  # Adjust async_mode as needed
 
 @socketio.on('connect')
 def handle_connect():
@@ -14,13 +14,13 @@ def handle_disconnect():
 
 @app.route('/webhook', methods=['POST'])
 def handle_webhook():
-    data = request.json
-    # Process data received from TradingView webhook
-    # Example: forward data to WebSocket clients
-    socketio.emit('trading_data', data, namespace='/')
-    return jsonify({'message': 'Webhook received'}), 200
+    try:
+        data = request.json
+        # Process incoming data
+        socketio.emit('trading_data', data)  # Example: broadcast data via WebSocket
+        return jsonify({'message': 'Webhook received'}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500  # Handle errors gracefully
 
 if __name__ == '__main__':
-    socketio.run(app, debug=True)
-
-    ## Add some thdown here
+    socketio.run(app)
