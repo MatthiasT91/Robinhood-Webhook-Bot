@@ -7,3 +7,5 @@ robin_stocks
 webull
 pandas
 pytz
+discord
+dotenv

@@ -2,6 +2,12 @@ from flask import Flask, request, jsonify
 from flask_socketio import SocketIO, emit
 from options import *
 import logging,json
+from dotenv import load_dotenv
+import os
+
+
+load_dotenv()
+
 
 app = Flask(__name__)
 socketio = SocketIO(app, async_mode='eventlet')
@@ -38,6 +44,7 @@ def handle_webhook():
         #app.logger.info(f"Received webhook data: {data}")
 
         # Process the data received from TradingView webhook
+        stockOrOptions = data.get('option')
         stock_position = data.get('position')
         stock_creditOrdebit = data.get('cord')
         stock_symbol = data.get('symbol')
@@ -47,7 +54,8 @@ def handle_webhook():
 
         # Log extracted values
         #app.logger.info(f"Position: {stock_position}, Cord: {stock_creditOrdebit}, Symbol: {stock_symbol}, Quantity: {stock_quantity}, Type: {stock_type}, Price: {stock_price}")
-
+        if stockOrOptions == 'stocks':
+            print("Heading to the Stock Function")
 
         # Run the function with the received data
         result = process_stock_data(stock_position, stock_creditOrdebit, 
@@ -69,7 +77,7 @@ def process_stock_data(stock_position, stock_creditOrdebit,
     app.logger.info(f"Processing data for {stock_symbol} with price {stock_price}")
     find_options(position=str(stock_position), cOrd=str(stock_creditOrdebit), symbol=str(stock_symbol), 
                  qtity=str(stock_quantity), price=str(stock_price), 
-                 type=str(stock_type), ac='120853833')
+                 type=str(stock_type), ac=f'{os.getenv('ACCOUNTID')}')
     
     result = f"Processed data for {stock_symbol} at price {stock_price}"
     return result

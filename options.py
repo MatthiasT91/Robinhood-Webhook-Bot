@@ -1,9 +1,20 @@
 import robin_stocks.robinhood as r
 from webull import webull
 from datetime import datetime, timedelta
+from discord import SyncWebhook
 import pandas as pd
 import json, time
 import pytz
+from dotenv import load_dotenv
+import os
+
+
+load_dotenv()
+
+
+def discord_message(messages,count,webhook_url):
+    webhook = SyncWebhook.from_url(url=webhook_url)
+    webhook.send(content=f"Wallet #{count}```{messages}```")
 
 
 def rh_login():
@@ -13,7 +24,9 @@ def rh_login():
     password: "Your Robinhood password to login"
 
     """
-    login = r.authentication.login(username='matthias91.mt@gmail.com', password='Mjt42391!!', expiresIn=None, scope='internal', by_sms=True, store_session=True, mfa_code=None, pickle_name='')
+    user = os.getenv('USERNAME')
+    password = os.getenv('PASSWORD')
+    login = r.authentication.login(username=user, password=password, expiresIn=None, scope='internal', by_sms=True, store_session=True, mfa_code=None, pickle_name='')
     if login.get('access_token'):
         print("Good to go! Logged into Robinhood")
         pass
@@ -95,13 +108,16 @@ def buy_options_limit(positionEffect,credOrdeb,price,symbol,quantity,expirationD
     purchase = r.orders.order_buy_option_limit(positionEffect, credOrdeb, price, symbol, quantity, expirationDate, strike, optionType=ot, account_number=an, timeInForce='gtc', jsonify=True)
     print(purchase)
 
+
 def sell_options_limit(positionEffect,cOrD,price,symbol,quantity,expirationDate,strike,ot,an):
     purchase = r.orders.order_sell_option_limit(positionEffect, cOrD, price, symbol, quantity, expirationDate, strike, optionType=ot, account_number=an, timeInForce='gtc', jsonify=True)
     print(purchase)
 
+
 def stop_limit(positionEffect, creditOrDebit, limitPrice, stopPrice, symbol, quantity, expirationDate, strike,ac,type):
     stop_limit = r.orders.order_sell_option_stop_limit(positionEffect, creditOrDebit, limitPrice, stopPrice, symbol, quantity, expirationDate, strike, optionType=type, account_number=ac, timeInForce='gtc', jsonify=True)
     print(stop_limit)
+
 
 def find_options(position=None, cOrd=None,
                  symbol=None, qtity=None, 
