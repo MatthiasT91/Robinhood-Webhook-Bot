@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_socketio import SocketIO, emit
+from options import *
 import logging,json
 
 app = Flask(__name__)
@@ -33,11 +34,17 @@ def handle_webhook():
         app.logger.info(f"Received webhook data: {data}")
 
         # Process the data received from TradingView webhook
+        stock_position = data.get('position')
+        stock_creditOrdebit = data.get('cord')
         stock_symbol = data.get('symbol')
+        stock_quantity = data.get('qtity')
+        stock_type = data.get('type')
         stock_price = data.get('price')
 
         # Run the function with the received data
-        result = process_stock_data(stock_symbol, stock_price)
+        result = process_stock_data(stock_position, stock_creditOrdebit, 
+                                    stock_symbol, stock_quantity, 
+                                    stock_type, stock_price)
 
         # Emit the result to WebSocket clients
         socketio.emit('trading_data', {'symbol': stock_symbol, 'price': stock_price, 'result': result})
@@ -47,11 +54,17 @@ def handle_webhook():
         app.logger.error(f"Error handling webhook: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
-def process_stock_data(symbol, price):
+def process_stock_data(stock_position, stock_creditOrdebit, 
+                                    stock_symbol, stock_quantity, 
+                                    stock_type, stock_price):
+    app.logger.info(f"Processing data for {stock_symbol} with price {stock_price}")
     # Dummy function to process stock data
     # Replace this with your actual processing logic
-    app.logger.info(f"Processing data for {symbol} with price {price}")
-    result = f"Processed data for {symbol} at price {price}"
+    find_options(position=stock_position, cOrd=stock_creditOrdebit, symbol=stock_symbol, 
+                 qtity=stock_quantity, price=stock_price, 
+                 type=stock_type, ac='120853833')
+    
+    result = f"Processed data for {stock_symbol} at price {stock_price}"
     return result
 
 if __name__ == '__main__':
