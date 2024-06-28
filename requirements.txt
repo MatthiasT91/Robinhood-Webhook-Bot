@@ -8,5 +8,6 @@ webull
 pandas
 pytz
 discord
+setuptools
+wheel
 dotenv
-python-dotenv
