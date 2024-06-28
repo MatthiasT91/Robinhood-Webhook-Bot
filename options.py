@@ -3,6 +3,7 @@ from webull import webull
 from datetime import datetime, timedelta
 import pandas as pd
 import json, time
+import pytz
 
 
 def rh_login():
@@ -19,15 +20,30 @@ def rh_login():
 
 
 def filter_recent_options(data, expiration=None):
-    current_date = datetime.utcnow().date()
+    # Get the current date and time in UTC
+    current_datetime_utc = datetime.utcnow()
+    
+    # Convert UTC to Eastern Time
+    eastern = pytz.timezone('US/Eastern')
+    current_datetime_est = current_datetime_utc.astimezone(eastern)
+    
+    # Get current date and time in EST
+    current_date = current_datetime_est.date()
+    current_time = current_datetime_est.time()
+    
     filtered_data = []
 
     if expiration:
         # If an expiration date is provided, convert it to datetime.date
         expiration_date = datetime.strptime(expiration, "%Y-%m-%d").date()
     else:
-        # Use today's date to filter options
+        # Default to today's date
         expiration_date = current_date
+
+        # Check if it's Friday after 2:30 PM EST
+        if current_date.weekday() == 4 and current_time > datetime.strptime("14:30", "%H:%M").time():
+            # Move to the next available option date, typically the following Monday
+            expiration_date += timedelta(days=(7 - current_date.weekday()))  # Next Monday
 
     for option in data:
         option_expiration = datetime.strptime(option["expiration_date"], "%Y-%m-%d").date()

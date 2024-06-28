@@ -35,7 +35,7 @@ def handle_webhook():
         except Exception:
             data = json.loads(request.data)
 
-        app.logger.info(f"Received webhook data: {data}")
+        #app.logger.info(f"Received webhook data: {data}")
 
         # Process the data received from TradingView webhook
         stock_position = data.get('position')
@@ -46,7 +46,7 @@ def handle_webhook():
         stock_price = data.get('price')
 
         # Log extracted values
-        app.logger.info(f"Position: {stock_position}, Cord: {stock_creditOrdebit}, Symbol: {stock_symbol}, Quantity: {stock_quantity}, Type: {stock_type}, Price: {stock_price}")
+        #app.logger.info(f"Position: {stock_position}, Cord: {stock_creditOrdebit}, Symbol: {stock_symbol}, Quantity: {stock_quantity}, Type: {stock_type}, Price: {stock_price}")
 
 
         # Run the function with the received data
@@ -67,8 +67,6 @@ def process_stock_data(stock_position, stock_creditOrdebit,
                                     stock_type, stock_price):
     
     app.logger.info(f"Processing data for {stock_symbol} with price {stock_price}")
-    # Dummy function to process stock data
-    # Replace this with your actual processing logic
     find_options(position=str(stock_position), cOrd=str(stock_creditOrdebit), symbol=str(stock_symbol), 
                  qtity=str(stock_quantity), price=str(stock_price), 
                  type=str(stock_type), ac='120853833')
