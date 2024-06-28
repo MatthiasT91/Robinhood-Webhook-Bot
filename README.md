@@ -15,9 +15,9 @@ Environment Variables:
 USERNAME=your_robinhood_username
 PASSWORD=your_robinhood_password
 ACCOUNTID=your_robinhood_account_number
-WEBHOOK=discord_webhook # if none then type: None
+WEBHOOK=discord_webhook # If none then type: None
 
-Replace `USERNAME`, `PASSWORD`, 'ACCOUNTID', 'WEBHOOK' with your actual Robinhood credentials. Ensure you keep this file secure and do not share it publicly.
+Replace `USERNAME`, `PASSWORD`, `ACCOUNTID`, `WEBHOOK` with your Robinhood credentials. Ensure you keep this file secure and do not share it publicly.
 
 Installation:
 -------------
