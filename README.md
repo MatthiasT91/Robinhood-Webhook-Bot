@@ -9,13 +9,11 @@ Setup:
 ------
 Environment Variables:
 
-1. Create `.env` file:
-   Create a file named `.env` in the root directory of this project. Add the following environment variables to it:
-
-USERNAME=your_robinhood_username
-PASSWORD=your_robinhood_password
-ACCOUNTID=your_robinhood_account_number
-WEBHOOK=discord_webhook # If none then type: None
+1. Rename the `example.env` to `config.env` file:
+    USERNAME=your_robinhood_username
+    PASSWORD=your_robinhood_password
+    ACCOUNTID=your_robinhood_account_number
+    WEBHOOK=discord_webhook # If none then type: None
 
 Replace `USERNAME`, `PASSWORD`, `ACCOUNTID`, `WEBHOOK` with your Robinhood credentials. Ensure you keep this file secure and do not share it publicly.
 
