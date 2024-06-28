@@ -34,12 +34,16 @@ def handle_webhook():
         app.logger.info(f"Received webhook data: {data}")
 
         # Process the data received from TradingView webhook
-        stock_position = data.get('position')
-        stock_creditOrdebit = data.get('cord')
+        stock_position = data.get('position', '').strip('{}')
+        stock_creditOrdebit = data.get('cord', '').strip('{}')
         stock_symbol = data.get('symbol')
-        stock_quantity = data.get('qtity')
-        stock_type = data.get('type')
+        stock_quantity = data.get('qtity', '').strip('{}')
+        stock_type = data.get('type', '').strip('{}')
         stock_price = data.get('price')
+
+        # Log extracted values
+        app.logger.info(f"Position: {stock_position}, Cord: {stock_creditOrdebit}, Symbol: {stock_symbol}, Quantity: {stock_quantity}, Type: {stock_type}, Price: {stock_price}")
+
 
         # Run the function with the received data
         result = process_stock_data(stock_position, stock_creditOrdebit, 

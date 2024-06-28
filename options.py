@@ -106,6 +106,7 @@ def find_options(position=None, cOrd=None,
         strike = filtered_options_load[0]['strike_price']
         type = filtered_options_load[0]['type']
         ask = filtered_options_load[0]['ask_price']
+        bid = filtered_options_load[0]['bid_price']
         highs = filtered_options_load[0]['high_price']
         lows = filtered_options_load[0]['low_price']
         mark = filtered_options_load[0]['mark_price']
@@ -119,6 +120,8 @@ def find_options(position=None, cOrd=None,
                           symbol=symbol,quantity=qtity,expirationDate=date,
                           strike=strike,ot=type,an=ac)
         time.sleep(30)
+        print(ask)
+        print(bid)
         stop_limit(positionEffect='close',creditOrDebit='credit',limitPrice=.02,
                    stopPrice=0.01,symbol=symbol,quantity=1,
                    expirationDate=date,strike=strike,ac=ac,type=type)
