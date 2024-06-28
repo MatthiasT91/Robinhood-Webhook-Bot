@@ -3,3 +3,6 @@ Flask-SocketIO
 gunicorn
 eventlet
 werkzeug
+robin_stocks
+webull
+pandas
