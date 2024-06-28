@@ -1,31 +1,36 @@
 from flask import Flask, request, jsonify
 from flask_socketio import SocketIO, emit
+import logging
 
 app = Flask(__name__)
 socketio = SocketIO(app, async_mode='eventlet')
 
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+
+@app.route('/health', methods=['GET'])
+def health_check():
+    app.logger.info('Health check endpoint called')
+    return jsonify({'status': 'Running'}), 200
+
 @socketio.on('connect')
 def handle_connect():
-    print('Client connected')
+    app.logger.info('Client connected')
 
 @socketio.on('disconnect')
 def handle_disconnect():
-    print('Client disconnected')
+    app.logger.info('Client disconnected')
 
 @app.route('/webhook', methods=['POST'])
 def handle_webhook():
     try:
-        data = request.json  # Assuming TradingView sends JSON data
-        print(f"Received webhook data: {data}")
-        socketio.emit('trading_data', data)  # Broadcast data via WebSocket if needed
+        data = request.json
+        app.logger.info(f"Received webhook data: {data}")
+        socketio.emit('trading_data', data)
         return jsonify({'message': 'Webhook received'}), 200
     except Exception as e:
-        print(f"Error handling webhook: {str(e)}")
+        app.logger.error(f"Error handling webhook: {str(e)}")
         return jsonify({'error': str(e)}), 500
-
-@app.route('/health', methods=['GET'])
-def health_check():
-    return jsonify({'status': 'Running'}), 200
 
 if __name__ == '__main__':
     socketio.run(app, debug=True, host='0.0.0.0')
