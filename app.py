@@ -65,12 +65,13 @@ def handle_webhook():
 def process_stock_data(stock_position, stock_creditOrdebit, 
                                     stock_symbol, stock_quantity, 
                                     stock_type, stock_price):
+    
     app.logger.info(f"Processing data for {stock_symbol} with price {stock_price}")
     # Dummy function to process stock data
     # Replace this with your actual processing logic
-    find_options(position=stock_position, cOrd=stock_creditOrdebit, symbol=stock_symbol, 
-                 qtity=stock_quantity, price=stock_price, 
-                 type=stock_type, ac='120853833')
+    find_options(position=str(stock_position), cOrd=str(stock_creditOrdebit), symbol=str(stock_symbol), 
+                 qtity=str(stock_quantity), price=str(stock_price), 
+                 type=str(stock_type), ac='120853833')
     
     result = f"Processed data for {stock_symbol} at price {stock_price}"
     return result
