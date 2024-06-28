@@ -42,8 +42,16 @@ def filter_recent_options(data, expiration=None):
 
         # Check if it's Friday after 2:30 PM EST
         if current_date.weekday() == 4 and current_time > datetime.strptime("14:30", "%H:%M").time():
-            # Move to the next available option date, typically the following Monday
-            expiration_date += timedelta(days=(7 - current_date.weekday()))  # Next Monday
+            # Look for the next available expiration date in the data
+            future_expirations = sorted(set(
+                datetime.strptime(option["expiration_date"], "%Y-%m-%d").date() for option in data
+                if datetime.strptime(option["expiration_date"], "%Y-%m-%d").date() > current_date
+            ))
+            if future_expirations:
+                expiration_date = future_expirations[0]
+            else:
+                # If no future expiration dates are found, assume the next Monday
+                expiration_date += timedelta(days=(7 - current_date.weekday()))  # Next Monday
 
     for option in data:
         option_expiration = datetime.strptime(option["expiration_date"], "%Y-%m-%d").date()
