@@ -9,3 +9,4 @@ pandas
 pytz
 discord
 dotenv
+python-dotenv
