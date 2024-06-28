@@ -5,15 +5,14 @@ from discord import SyncWebhook
 import pandas as pd
 import json, time
 import pytz
-from dotenv import load_dotenv
-import os
+import configparser
 
 
-load_dotenv('config.env')
-
+config = configparser.ConfigParser()
+config.read('config.ini')
 
 def discord_message(messages):
-    webhook_url = os.getenv('WEBHOOK')
+    webhook_url = config['credentials']['WEBHOOK']
     if webhook_url == None:
         return
     webhook = SyncWebhook.from_url(url=webhook_url)
@@ -27,8 +26,8 @@ def rh_login():
     password: "Your Robinhood password to login"
 
     """
-    user = os.getenv('USERNAME')
-    password = os.getenv('PASSWORD')
+    user = config['credentials']['USERNAME']
+    password = config['credentials']['PASSWORD']
     login = r.authentication.login(username=user, password=password, expiresIn=None, scope='internal', by_sms=True, store_session=True, mfa_code=None, pickle_name='')
     if login.get('access_token'):
         print("Good to go! Logged into Robinhood")

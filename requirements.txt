@@ -8,6 +8,4 @@ webull
 pandas
 pytz
 discord
-setuptools
-wheel
-dotenv
+configparser

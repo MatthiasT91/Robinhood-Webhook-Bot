@@ -87,8 +87,11 @@ celerybeat-schedule
 # dotenv files
 .env
 
-# dotenv file for environment variables
-config.env
+# ini files
+.ini
+
+# ini file for environment variables
+config.ini
 
 # Ignore JetBrains IDE folder
 .idea/
