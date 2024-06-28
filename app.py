@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_socketio import SocketIO, emit
-import logging
+import logging,json
 
 app = Flask(__name__)
 socketio = SocketIO(app, async_mode='eventlet')
@@ -23,12 +23,13 @@ def handle_disconnect():
 
 @app.route('/webhook', methods=['POST'])
 def handle_webhook():
-    if request.content_type != 'application/json':
-        app.logger.error('Unsupported Media Type: Content-Type must be application/json')
-        return jsonify({'error': 'Unsupported Media Type: Content-Type must be application/json'}), 415
-
     try:
-        data = request.json
+        # Attempt to parse JSON data
+        try:
+            data = request.json
+        except Exception:
+            data = json.loads(request.data)
+
         app.logger.info(f"Received webhook data: {data}")
 
         # Process the data received from TradingView webhook
