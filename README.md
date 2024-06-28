@@ -15,6 +15,10 @@ Environment Variables:
     ACCOUNTID=your_robinhood_account_number
     WEBHOOK=discord_webhook # If none then type: None
 
+
+Tradingview Alert message:
+-------------
+
 Replace `USERNAME`, `PASSWORD`, `ACCOUNTID`, `WEBHOOK` with your Robinhood credentials. Ensure you keep this file secure and do not share it publicly.
 
 Installation:
