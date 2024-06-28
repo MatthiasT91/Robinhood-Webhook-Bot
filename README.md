@@ -16,9 +16,6 @@ Environment Variables:
     WEBHOOK=discord_webhook # If none then type: None
 
 
-Tradingview Alert message:
--------------
-
 Replace `USERNAME`, `PASSWORD`, `ACCOUNTID`, `WEBHOOK` with your Robinhood credentials. Ensure you keep this file secure and do not share it publicly.
 
 Installation:
@@ -33,6 +30,9 @@ Installation:
 
 3. Run the application:
 To run the Webhook with Tradingview. You will need to have a paid account, and you will need to change the message for what you want to do.
+
+Tradingview Alert message:
+-------------
 
 {
   "option":"stocks",
