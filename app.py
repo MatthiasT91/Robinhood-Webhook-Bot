@@ -23,20 +23,24 @@ def handle_disconnect():
 
 @app.route('/webhook', methods=['POST'])
 def handle_webhook():
+    if request.content_type != 'application/json':
+        app.logger.error('Unsupported Media Type: Content-Type must be application/json')
+        return jsonify({'error': 'Unsupported Media Type: Content-Type must be application/json'}), 415
+
     try:
         data = request.json
         app.logger.info(f"Received webhook data: {data}")
-        
+
         # Process the data received from TradingView webhook
         stock_symbol = data.get('symbol')
         stock_price = data.get('price')
 
         # Run the function with the received data
         result = process_stock_data(stock_symbol, stock_price)
-        
+
         # Emit the result to WebSocket clients
         socketio.emit('trading_data', {'symbol': stock_symbol, 'price': stock_price, 'result': result})
-        
+
         return jsonify({'message': 'Webhook received', 'result': result}), 200
     except Exception as e:
         app.logger.error(f"Error handling webhook: {str(e)}")
