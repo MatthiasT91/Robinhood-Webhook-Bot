@@ -82,7 +82,7 @@ def process_stock_data(stock_position, stock_creditOrdebit,
     app.logger.info(f"Processing data for {stock_symbol} with price {stock_price}")
     find_options(position=str(stock_position), cOrd=str(stock_creditOrdebit), symbol=str(stock_symbol), 
                  qtity=str(stock_quantity), price=str(stock_price), 
-                 type=str(stock_type), ac=f'{config.get("ACCOUNTINFO", "accountid")}')
+                 type=str(stock_type), ac=f'{os.getenv('accountid')}')
     
     result = f"Processed data for {stock_symbol} at price {stock_price}"
     return result
