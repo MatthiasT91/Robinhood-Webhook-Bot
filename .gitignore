@@ -84,12 +84,6 @@ Pipfile.lock
 # celery beat schedule file
 celerybeat-schedule
 
-# dotenv files
-.env
-
-# ini files
-.ini
-
 # ini file for environment variables
 config.ini
 
