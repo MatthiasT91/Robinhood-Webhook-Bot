@@ -34,6 +34,7 @@ def rh_login():
 
 def crypto_limit_order(symbol,quantity,limitPrice):
     orders = r.orders.order_buy_crypto_limit(symbol, quantity, limitPrice, timeInForce='gtc', jsonify=True)
+    discord_message(orders)
     print(orders)
 
 def crypto_robinhood(symbol,quantity,limitPrice):
