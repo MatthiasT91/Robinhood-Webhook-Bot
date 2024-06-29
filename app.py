@@ -60,7 +60,7 @@ def handle_webhook():
         
         if stockOrOptions == 'crypto':
             app.logger.info("Heading to the Crypto Function")
-            crypto_robinhood(stock_symbol,stock_quantity,stock_price)
+            crypto_robinhood(stock_symbol,stock_quantity,stock_price,app)
 
         # Run the function with the received data
         result = process_stock_data(stock_position, stock_creditOrdebit, 

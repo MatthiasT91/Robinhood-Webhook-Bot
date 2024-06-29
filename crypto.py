@@ -18,7 +18,7 @@ def discord_message(messages):
     webhook.send(content=f"```{messages}```")
 
 
-def rh_login():
+def rh_login(app):
     """
     Robinhood Login:
     username: "Your Username" - Most likely your email
@@ -26,8 +26,10 @@ def rh_login():
 
     """
     user = config['credentials']['username']
-    password = config['credentials']['password']
-    login = r.authentication.login(username=user, password=password, expiresIn=None, scope='internal', by_sms=True, store_session=True, mfa_code=None, pickle_name='')
+    passw = config['credentials']['password']
+    app.logger.info(f'Username: {user}')
+    app.logger.info(f'Password: {passw}')
+    login = r.authentication.login(username=user, password=passw, expiresIn=None, scope='internal', by_sms=True, store_session=True, mfa_code=None, pickle_name='')
     if login.get('access_token'):
         print("Good to go! Logged into Robinhood")
         pass
@@ -37,6 +39,6 @@ def crypto_limit_order(symbol,quantity,limitPrice):
     discord_message(orders)
     print(orders)
 
-def crypto_robinhood(symbol,quantity,limitPrice):
-    rh_login()
+def crypto_robinhood(symbol,quantity,limitPrice,app):
+    rh_login(app)
     crypto_limit_order(symbol,quantity,limitPrice)
