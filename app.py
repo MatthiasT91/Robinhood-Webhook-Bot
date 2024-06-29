@@ -59,8 +59,8 @@ def handle_webhook():
             print("Heading to the Stock Function")
         
         if stockOrOptions == 'crypto':
+            app.logger.info("Heading to the Crypto Function")
             crypto_robinhood(stock_symbol,stock_quantity,stock_price)
-            print("Heading to the Crypto Function")
 
         # Run the function with the received data
         result = process_stock_data(stock_position, stock_creditOrdebit, 
@@ -82,7 +82,7 @@ def process_stock_data(stock_position, stock_creditOrdebit,
     app.logger.info(f"Processing data for {stock_symbol} with price {stock_price}")
     find_options(position=str(stock_position), cOrd=str(stock_creditOrdebit), symbol=str(stock_symbol), 
                  qtity=str(stock_quantity), price=str(stock_price), 
-                 type=str(stock_type), ac=f'{config['credentials']['ACCOUNTID']}')
+                 type=str(stock_type), ac=f'{config['credentials']['acountid']}')
     
     result = f"Processed data for {stock_symbol} at price {stock_price}"
     return result
