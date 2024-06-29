@@ -11,7 +11,7 @@ config = configparser.ConfigParser()
 config.read('config.ini')
 
 def discord_message(messages):
-    webhook_url = config['ACCOUNTINFO']['webhook']
+    webhook_url = config.get("ACCOUNTINFO", "webhook")
     if webhook_url == None:
         return
     webhook = SyncWebhook.from_url(url=webhook_url)
@@ -25,8 +25,8 @@ def rh_login(app):
     password: "Your Robinhood password to login"
 
     """
-    user = config['ACCOUNTINFO']['username']
-    passw = config['ACCOUNTINFO']['password']
+    user = config.get("ACCOUNTINFO", "username")
+    passw = config.get("ACCOUNTINFO", "password")
     app.logger.info(f'Username: {user}')
     app.logger.info(f'Password: {passw}')
     login = r.authentication.login(username=user, password=passw, expiresIn=None, scope='internal', by_sms=True, store_session=True, mfa_code=None, pickle_name='')
