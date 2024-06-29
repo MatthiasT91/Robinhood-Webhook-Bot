@@ -1,5 +1,4 @@
 import robin_stocks.robinhood as r
-from webull import webull
 from datetime import datetime, timedelta
 from discord import SyncWebhook
 import pandas as pd
@@ -33,7 +32,6 @@ def rh_login():
         print("Good to go! Logged into Robinhood")
         pass
 
-
-def stock_limit_order(symbol,quantity,limitPrice,exHours,ac):
-    orders = r.orders.order_buy_limit(symbol, quantity, limitPrice, account_number=ac, timeInForce='gtc', extendedHours=exHours, jsonify=True)
+def crypto_limit_order(symbol,quantity,limitPrice):
+    orders = r.orders.order_buy_crypto_limit(symbol, quantity, limitPrice, timeInForce='gtc', jsonify=True)
     print(orders)

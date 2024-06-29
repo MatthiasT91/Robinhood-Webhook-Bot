@@ -1,6 +1,8 @@
 from flask import Flask, request, jsonify
 from flask_socketio import SocketIO, emit
 from options import *
+from stocks import *
+from crypto import *
 import logging,json
 import configparser
 
@@ -55,6 +57,10 @@ def handle_webhook():
         #app.logger.info(f"Position: {stock_position}, Cord: {stock_creditOrdebit}, Symbol: {stock_symbol}, Quantity: {stock_quantity}, Type: {stock_type}, Price: {stock_price}")
         if stockOrOptions == 'stocks':
             print("Heading to the Stock Function")
+        
+        if stockOrOptions == 'crypto':
+            crypto_limit_order(stock_symbol,stock_quantity,stock_price)
+            print("Heading to the Crypto Function")
 
         # Run the function with the received data
         result = process_stock_data(stock_position, stock_creditOrdebit, 
