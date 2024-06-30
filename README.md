@@ -2,7 +2,7 @@ Options Bot
 
 Introduction:
 -------------
-This repository contains scripts and tools for managing options/stock data using TradingView webhooks,
+This repository contains scripts and tools for managing options/stock/crypto data using TradingView webhooks,
   and interacting with the Robinhood API.
 
 Setup:
