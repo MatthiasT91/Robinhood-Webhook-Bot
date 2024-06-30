@@ -13,7 +13,7 @@ def rh_login(app):
     password: "Your Robinhood password to login"
 
     """
-    logins = login(username='matthias91.mt@gmail.com', password='Mjt42391!!', expiresIn=None, scope='internal', by_sms=True, store_session=True, mfa_code=None, pickle_name='')
+    logins = login(username='your_username', password='your_password', expiresIn=None, scope='internal', by_sms=True, store_session=True, mfa_code=None, pickle_name='')
 
     if logins.get('access_token'):
         debug_messages(app,"Good to go! Logged into Robinhood")
@@ -21,7 +21,7 @@ def rh_login(app):
 
 
 def discord_message(messages):
-    webhook = SyncWebhook.from_url(url='https://discord.com/api/webhooks/1226801531337048096/sKmFCuqJ5CzSWBIaTsA-d9pP_tZzzwWtoxncBMuR-CQjM-d4BcPH12T27XLDATN6Nmvd')
+    webhook = SyncWebhook.from_url(url='ypur_discord_webhook_url')
     webhook.send(content=f"```{messages}```")
     return
 
