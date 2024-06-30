@@ -7,7 +7,7 @@ def rh_login():
     password: "Your Robinhood password to login"
 
     """
-    logins = login(username='matthias91.mt@gmail.com', password='Mjt42391!!', expiresIn=None, scope='internal', by_sms=True, store_session=True, mfa_code=None, pickle_name='')
+    logins = login(username='your_username', password='your_password', expiresIn=None, scope='internal', by_sms=True, store_session=True, mfa_code=None, pickle_name='')
     
     if logins.get('access_token'):
         print("Good to go! Logged into Robinhood")
