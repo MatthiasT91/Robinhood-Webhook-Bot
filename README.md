@@ -8,7 +8,7 @@ This repository contains scripts and tools for managing options/stock/crypto dat
 
 Setup:
 -------------
-1. Go and create an account on DigitalOcean (If you uuse my referal linkk you will recieve $200 of free credit to use) if you dont have one already.
+1. Go and create an account on DigitalOcean (If you use my referral link you will receive $200 of free credit to use) if you dont have one already.
    	https://m.do.co/c/de7d99f5f217
    
 2. Go and create a new App under App Platform and name it whatever you want.
@@ -20,7 +20,7 @@ Installation:
 -------------
 
 1. Clone the repository:
-		git clone https://github.com/yourusername/options-bot.git
+		git clone https://github.com/MatthiasT91/options-bot.git
 
 2. Go into the folder to install Dependencies:
   	cd options-bot
