@@ -58,6 +58,7 @@ Installation:
 
 5. **Configure the Application:**
     - Rename the `example.ini` file to `config.ini`.
+    - Fill in the fields in the file to your settings
 
 TradingView Alert Message:
 --------------------------
