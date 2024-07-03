@@ -89,6 +89,6 @@ To deploy this application to a new server and set up webhooks from TradingView,
 **If you would like to buy me a coffee here is a few ways:**
 
     PayPal          - @MatthiasTovar
-    Solana (Crypto) -  E2VUz9PzabS547pxBJnFZCCDT3VtqdhnrMgyKc7ksPE7
+    Solana (Crypto) - E2VUz9PzabS547pxBJnFZCCDT3VtqdhnrMgyKc7ksPE7
     ETH (Crypto)    - 0xeCcDF3B9fD507bf3a7B196e093Dc7FC0114CfDb3
     BTC (Crypto)    - bc1qu06sj3z4dkllkup2ew42gh523u3usvw0p2wpk2 **
