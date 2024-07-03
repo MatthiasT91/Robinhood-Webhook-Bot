@@ -23,9 +23,7 @@ Setup:
 	Keep the terminal open..
 
 6. Go and create an account on DigitalOcean (If you use my referral link you will receive $200 
-	of free credit to use) if you dont have one already.
-
-   	[DigitalOcean](https://m.do.co/c/de7d99f5f217)
+	of free credit to use) if you dont have one already [DigitalOcean](https://m.do.co/c/de7d99f5f217).
    
 8. Go and create a new App under App Platform and name it whatever you want.
 
