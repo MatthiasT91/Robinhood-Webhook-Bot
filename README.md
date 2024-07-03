@@ -86,7 +86,7 @@ To deploy this application to a new server and set up webhooks from TradingView,
 
 **Enjoy managing your trading data with FCT's Robinhoods Options/Stock/Crypto Webhook Bot! This `README.txt` file provides clear instructions for setting up the project, configuring environment variables, installing dependencies, and deploying the application to a new server.**
 
-**If you would like to buy me a coffee here is a few ways:
+**If you would like to buy me a coffee here is a few ways:**
     - PayPal - @MatthiasTovar
     - Solana (Crypto) -  E2VUz9PzabS547pxBJnFZCCDT3VtqdhnrMgyKc7ksPE7
     - ETH (Crypto) - 0xeCcDF3B9fD507bf3a7B196e093Dc7FC0114CfDb3
