@@ -1,29 +1,33 @@
 from robinhood.authentication import login
 from robinhood.crypto import get_crypto_currency_pairs
 from robinhood.orders import order_buy_crypto_by_quantity,order_sell_crypto_by_quantity,\
-    order_buy_crypto_limit,order_sell_crypto_limit
+    order_buy_crypto_limit,order_sell_crypto_limit, get_all_crypto_orders
 from discord import SyncWebhook
+import time
 
 
 
-def rh_login(app):
+def rh_login(app,settings):
     """
     Robinhood Login:
     username: "Your Username" - Most likely your email
     password: "Your Robinhood password to login"
 
     """
-    logins = login(username='matthias91.mt@gmail.com', password='Mjt42391!!', expiresIn=None, scope='internal', by_sms=True, store_session=True, mfa_code=None, pickle_name='')
-
+    user = settings.get('username')
+    password = settings.get('password')
+    logins = login(username=user, password=password, expiresIn=None, scope='internal', by_sms=True, store_session=True, mfa_code=None, pickle_name='')
     if logins.get('access_token'):
         debug_messages(app,"Good to go! Logged into Robinhood")
         pass
 
 
-def discord_message(messages):
-    webhook = SyncWebhook.from_url(url='https://discord.com/api/webhooks/1226801531337048096/sKmFCuqJ5CzSWBIaTsA-d9pP_tZzzwWtoxncBMuR-CQjM-d4BcPH12T27XLDATN6Nmvd')
+def discord_message(messages,settings):
+    webhook_url = settings.get('webhook')
+    if webhook_url == None:
+        return
+    webhook = SyncWebhook.from_url(url=webhook_url)
     webhook.send(content=f"```{messages}```")
-    return
 
 
 def debug_messages(app,messages):
@@ -74,6 +78,10 @@ def extract_order_details(order_response):
     }
 
 
+def crypto_orders():
+    get_all_crypto_orders(info=None)
+
+
 def crypto_order(symbol, quantity, price, stock_type, stock_position, app=None):
     # Get the list of crypto currency pairs
     crypto_pairs = get_crypto_currency_pairs(info=None)
@@ -103,7 +111,7 @@ def crypto_order(symbol, quantity, price, stock_type, stock_position, app=None):
 
     currency_pair_id = filtered_pair['id']
 
-    debug_messages(app,f"Sending price: {price}")
+    debug_messages(app, f"Sending price: {price}")
 
     orders = None
 
@@ -114,56 +122,91 @@ def crypto_order(symbol, quantity, price, stock_type, stock_position, app=None):
 
         if stock_type == 'buy':
             # Place a Market order
-            if stock_position == 'market':
-                orders = order_buy_crypto_by_quantity(
-                    symbol=stripped_symbol,
-                    _id=currency_pair_id,
-                    quantity=quantity,
-                    timeInForce='gtc',
-                    jsonify=True
-                )
-            else:
-                # Place a Limit order
-                orders = order_buy_crypto_limit(
-                    symbol=stripped_symbol,
-                    quantity=quantity,
-                    limitPrice=price,
-                    _id=currency_pair_id,
-                    timeInForce='gtc',
-                    jsonify=True
-                )
+            while True:
+                if stock_position == 'market':
+                    orders = order_buy_crypto_by_quantity(
+                        symbol=stripped_symbol,
+                        _id=currency_pair_id,
+                        quantity=quantity,
+                        timeInForce='gtc',
+                        jsonify=True
+                    )
+                    checking_orders = get_all_crypto_orders(info=None)
+                    first_order = checking_orders[0]
+                    state = first_order.get('state')
+                    if state == 'rejected':
+                        debug_messages(app, state)
+                        time.sleep(1)
+                        continue
+                    else:
+                        break
+                else:
+                    # Place a Limit order
+                    orders = order_buy_crypto_limit(
+                        symbol=stripped_symbol,
+                        quantity=quantity,
+                        limitPrice=price,
+                        _id=currency_pair_id,
+                        timeInForce='gtc',
+                        jsonify=True
+                    )
+                    checking_orders = get_all_crypto_orders(info=None)
+                    first_order = checking_orders[0]
+                    state = first_order.get('state')
+                    if state == 'rejected':
+                        debug_messages(app, state)
+                        time.sleep(1)
+                        continue
+                    else:
+                        break
         else:
-            # Place a Market order
-            if stock_position == 'market':
-                orders = order_sell_crypto_by_quantity(
-                    symbol=stripped_symbol,
-                    _id=currency_pair_id,
-                    quantity=quantity,
-                    timeInForce='gtc',
-                    jsonify=True
-                )
-            else:
-                # Place a Limit order
-                orders = order_sell_crypto_limit(
-                    symbol=stripped_symbol,
-                    quantity=quantity,
-                    limitPrice=price,
-                    _id=currency_pair_id,
-                    timeInForce='gtc',
-                    jsonify=True
-                )
+            while True:
+                # Place a Market order
+                if stock_position == 'market':
+                    orders = order_sell_crypto_by_quantity(
+                        symbol=stripped_symbol,
+                        _id=currency_pair_id,
+                        quantity=quantity,
+                        timeInForce='gtc',
+                        jsonify=True
+                    )
+                    checking_orders = get_all_crypto_orders(info=None)
+                    first_order = checking_orders[0]
+                    state = first_order.get('state')
+                    if state == 'rejected':
+                        debug_messages(app, state)
+                        time.sleep(1)
+                        continue
+                    else:
+                        break
+                else:
+                    # Place a Limit order
+                    orders = order_sell_crypto_limit(
+                        symbol=stripped_symbol,
+                        quantity=quantity,
+                        limitPrice=price,
+                        _id=currency_pair_id,
+                        timeInForce='gtc',
+                        jsonify=True
+                    )
+                    checking_orders = get_all_crypto_orders(info=None)
+                    first_order = checking_orders[0]
+                    state = first_order.get('state')
+                    if state == 'rejected':
+                        debug_messages(app, state)
+                        time.sleep(1)
+                        continue
+                    else:
+                        break
 
     return orders
 
 
-def crypto_robinhood(symbol, quantity, price, stock_type, stock_position, app):
-    rh_login(app)
+def crypto_robinhood(symbol, quantity, price, stock_type, stock_position, app, settings):
+    rh_login(app,settings)
     creating_order = crypto_order(symbol, quantity, price, stock_type, stock_position, app)
     if creating_order:
         order_details = extract_order_details(creating_order)
         order_info = format_order_message(order_details)
-        discord_message(order_info)
+        discord_message(order_info,settings)
         debug_messages(app,order_info)
-
-#if __name__ == '__main__':
-#    crypto_robinhood('DOGEUSDT',5,0.12196,'buy',None)
