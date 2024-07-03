@@ -80,7 +80,7 @@ To deploy this application to a new server and set up webhooks from TradingView,
         ```
 
 2. **App created on DigitalOcean:**
-    - Now you should have your new project on GitHub and can proceed to create the app on DigitalOcean.
+    - Now you should have your new project on GitHub and on DigitalOcean.
 
 ---
 
