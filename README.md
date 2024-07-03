@@ -1,7 +1,9 @@
 Introduction
+---------------
 This repository contains tools for managing options/stocks and crypto data using TradingView webhooks, and interacting with the Robinhood API.
 
 Setup
+--------------
 Create a GitHub Account:
 
 If you don't have a GitHub account, create one now.
