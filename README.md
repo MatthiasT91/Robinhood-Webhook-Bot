@@ -84,4 +84,4 @@ To deploy this application to a new server and set up webhooks from TradingView,
 
 ---
 
-**Enjoy managing your options data with FCT's Options/Stock Webhook Bot! This `README.txt` file provides clear instructions for setting up the project, configuring environment variables, installing dependencies, and deploying the application to a new server.**
+**Enjoy managing your trading data with FCT's Robinhoods Options/Stock/Crypto Webhook Bot! This `README.txt` file provides clear instructions for setting up the project, configuring environment variables, installing dependencies, and deploying the application to a new server.**
