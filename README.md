@@ -36,18 +36,20 @@ Installation:
    
 		```git clone https://github.com/MatthiasT91/Robinhood-Webhook-Bot.git```
 
-3. Go into the folder to install Dependencies:
+2. Go into the folder to install Dependencies:
    
   	```cd options-bot```
 
-5. Install dependencies:
+3. Install dependencies:
    
 		```pip install -r requirements.txt```
 
-7. Run the application:
+4. Run the application:
    	You will deploy the app on DigitalOcean and that will run the flask application waiting for new alerts to come in.
 	
 	To run the Webhook with Tradingview. You will need to have a paid TradingView account, and you will need to change the message for what you want to do.
+
+5. Change the name of the example.ini fil to config.ini.
 
 
 Tradingview Alert message:
