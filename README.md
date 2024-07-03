@@ -51,14 +51,15 @@ Installation:
         ```sh
         pip install -r requirements.txt
         ```
-
-4. **Run the Application:**
-    - Deploy the app on DigitalOcean. This will run the Flask application, waiting for new alerts to come in.
-    - To run the webhook with TradingView, you will need a paid TradingView account. Change the alert message to suit your requirements.
-
-5. **Configure the Application:**
+4. **Configure the Application:**
     - Rename the `example.ini` file to `config.ini`.
     - Fill in the fields in the file to your settings
+      
+
+5. **Run the Application:**
+    - Deploy the app on DigitalOcean. This will run the Flask application, waiting for new alerts to come in.
+    - To run the webhook with TradingView, you will need a paid TradingView account. Change the alert message to suit your requirements.
+      
 
 TradingView Alert Message:
 --------------------------
