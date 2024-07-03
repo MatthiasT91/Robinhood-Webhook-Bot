@@ -49,7 +49,7 @@ Installation:
 	
 	To run the Webhook with Tradingview. You will need to have a paid TradingView account, and you will need to change the message for what you want to do.
 
-5. Change the name of the example.ini fil to config.ini.
+5. Change the name of the example.ini file to config.ini.
 
 
 Tradingview Alert message:
