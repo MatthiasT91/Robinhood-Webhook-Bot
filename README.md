@@ -13,7 +13,7 @@ Setup:
 
 2. After you have created a new Repo, you will need to create a folder for the project on your
 	local PC. After creating a folder, you will need to open that up with a terminal. Once opened, and now direct yourself to the folder you just created. Once inside the folder you will need to initiate the folder for GitHub by typing this. 
-		git init
+		```git init```
 	Once intiated you will need to connect your account to github by typing this:
 	git remote add origin https://github.com/your-username/your-repository-name.git
 	That will be from your username from github and the new repo you just created.
