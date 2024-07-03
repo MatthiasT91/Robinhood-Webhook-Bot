@@ -308,7 +308,6 @@ def find_options(position, cOrd,symbol, qtity,
         type_close = filtered_options_load[0]['type']
         bid_close    = filtered_options_load[0]['bid_price']
 
-<<<<<<< HEAD
         orders = sell_options_limit(positionEffect=position,cOrD=cOrd,price=bid_close,
                               symbol=symbol_close,quantity=qtity,expirationDate=date_close,
                               strike=strike_close,ot=type_close,an=settings.get('accountid'))
@@ -316,10 +315,3 @@ def find_options(position, cOrd,symbol, qtity,
     if orders: 
         print("Sending back")
         return
-=======
-
-#if __name__ == '__main__':
-#    find_options(position='open', cOrd='debit', symbol='SPY', 
-#                 qtity=1, strike=540.00, 
-#                 type='put', ac='')
->>>>>>> e082c8c7b9088abffe69823655f07be220b52239
