@@ -79,7 +79,7 @@ To deploy this application to a new server and set up webhooks from TradingView,
         git push -u origin master:main
         ```
 
-2. **Create the App on DigitalOcean:**
+2. **App created on DigitalOcean:**
     - Now you should have your new project on GitHub and can proceed to create the app on DigitalOcean.
 
 ---
