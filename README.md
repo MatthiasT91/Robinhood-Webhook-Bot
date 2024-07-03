@@ -56,7 +56,7 @@ Tradingview Alert message:
 -------------
 Insert these messages into the TradingView alert message box, and then change the webhook URL in the notifications pannel.
 
-Messages can be found in the #alert_options_info.txt file.
+Messages can be found in the **alert_options_info.txt file**.
 
 Deployment to a New Server:
 ----------------------------
