@@ -9,7 +9,7 @@ This repository contains scripts and tools for managing options/stock/crypto dat
 Setup:
 -------------
 1. If you dont have a github account, create one now.
-2. 
+   
    You will need to make a new Repositorie, and name it whatever you want. 
 
 3. After you have created a new Repo, you will need to create a folder for the project on your local PC.
