@@ -167,11 +167,19 @@ def process_options_data(stock_position, stock_creditOrdebit,
     
     app.logger.info(f"Processing data for {stock_symbol} with price {stock_price1}")
     find_options(position=str(stock_position), cOrd=str(stock_creditOrdebit), symbol=str(stock_symbol), 
+<<<<<<< HEAD
                  qtity=str(stock_quantity), price1=str(stock_price1), price2=str(stock_price2), 
                  strike=str(stock_strike), expiration=str(stock_expiration), 
                  option_type=str(option_type), type=str(stock_type), app=None, settings=settings)
     return
 
+=======
+                 qtity=str(stock_quantity), price=str(stock_price), 
+                 type=str(stock_type), ac='your_robinhood_account_number)
+    
+    result = f"Processed data for {stock_symbol} at price {stock_price}"
+    return result
+>>>>>>> e082c8c7b9088abffe69823655f07be220b52239
 
 if __name__ == '__main__':
     socketio.run(app, debug=True, host='0.0.0.0', port=8080)
