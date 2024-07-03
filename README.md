@@ -29,6 +29,7 @@ Setup:
 
 4. **Create a New App on DigitalOcean:**
     - Create a new app under the App Platform and name it whatever you want.
+    - Cost is around $10/mon to run the aop on the server
 
 Installation:
 -------------
