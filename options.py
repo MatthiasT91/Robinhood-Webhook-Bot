@@ -2,13 +2,10 @@ from robinhood.authentication import login
 from robinhood.stocks import get_quotes
 from robinhood.orders import order_buy_option_limit, order_sell_option_limit, order_sell_option_stop_limit
 from robinhood.options import find_options_by_strike
-from datetime import datetime
-import datetime
+from datetime import datetime,time,timedelta
 from discord import SyncWebhook
 import json
 import pytz
-import math
-import requests
 from scipy.stats import norm
 
 
@@ -55,7 +52,7 @@ def rh_login(app,settings):
 
 def filter_recent_options(data, expiration=None):
     # Get the current date and time in UTC
-    current_datetime_utc = datetime.datetime.utcnow()
+    current_datetime_utc = datetime.utcnow()
     
     # Convert UTC to Eastern Time
     eastern = pytz.timezone('US/Eastern')
@@ -69,21 +66,21 @@ def filter_recent_options(data, expiration=None):
 
     if expiration:
         # If an expiration date is provided, convert it to datetime.date
-        expiration_date = datetime.datetime.strptime(expiration, "%Y-%m-%d").date()
+        expiration_date = datetime.strptime(expiration, "%Y-%m-%d").date()
     else:
         # If no expiration date is provided, find the nearest expiration date
         future_expirations = sorted(set(
-            datetime.datetime.strptime(option["expiration_date"], "%Y-%m-%d").date() for option in data
-            if datetime.datetime.strptime(option["expiration_date"], "%Y-%m-%d").date() >= current_date
+            datetime.strptime(option["expiration_date"], "%Y-%m-%d").date() for option in data
+            if datetime.strptime(option["expiration_date"], "%Y-%m-%d").date() >= current_date
         ))
         if future_expirations:
             expiration_date = future_expirations[0]
         else:
             # If no future expiration dates found, set a default far future date to avoid filtering all options out
-            expiration_date = current_date + datetime.timedelta(days=365)
+            expiration_date = current_date + timedelta(days=365)
 
     for option in data:
-        option_expiration = datetime.datetime.strptime(option["expiration_date"], "%Y-%m-%d").date()
+        option_expiration = datetime.strptime(option["expiration_date"], "%Y-%m-%d").date()
 
         if option_expiration == expiration_date:
             # Option with only the specified fields
@@ -122,97 +119,12 @@ def get_quotes(inputSymbols):
 
 def buy_options_limit(positionEffect,credOrdeb,price,symbol,quantity,expirationDate,strike,ot,an):
     purchase = order_buy_option_limit(positionEffect, credOrdeb, price, symbol, quantity, expirationDate, strike, optionType=ot, account_number=an, timeInForce='gtc', jsonify=True)
-    print(purchase)
     return purchase
 
 
 def sell_options_limit(positionEffect,cOrD,price,symbol,quantity,expirationDate,strike,ot,an):
     purchase = order_sell_option_limit(positionEffect, cOrD, price, symbol, quantity, expirationDate, strike, optionType=ot, account_number=an, timeInForce='gtc', jsonify=True)
-    print(purchase)
     return purchase
-
-
-# Not being used ->
-def get_treasury_yield(series_id):
-    url = f'https://api.stlouisfed.org/fred/series/observations?series_id={series_id}&api_key=288ca63ff70507816a2a421702db28f0&file_type=json'
-    response = requests.get(url)
-    data = response.json()
-
-    if 'observations' not in data or not data.get('observations'):
-        raise ValueError('No data found for the given series ID.')
-    
-    # Get the most recent yield
-    latest_data = data.get('observations')[-1]  # Assuming the most recent data is the last entry
-    risk_free_rate = float(latest_data.get('value')) / 100  # Convert percentage to decimal
-    return risk_free_rate
-
-
-def get_risk_free_rate(expiration_date_str):
-    expiration_date = datetime.datetime.strptime(expiration_date_str, "%Y-%m-%d").date()
-    today = datetime.date.today()
-    days_to_expiration = (expiration_date - today).days
-
-    if days_to_expiration <= 31:
-        series_id = 'DGS1MO'  # 1-month Treasury yield
-    elif days_to_expiration <= 92:
-        series_id = 'DGS3MO'  # 3-month Treasury yield
-    else:
-        series_id = 'DGS6MO'  # 6-month Treasury yield (or you can choose another)
-    return get_treasury_yield(series_id=series_id)
-
-
-def black_scholes(S, K, T, r, sigma, option_type):
-    S = float(S)
-    K = float(K)
-    T = float(T)
-    r = float(r)
-    sigma = float(sigma)
-    print(S)
-    print(K)
-    print(T)
-    print(r)
-    print(sigma)
-
-    # Debug prints to trace the computation
-    print(f"S: {S}, K: {K}, T: {T}, r: {r}, sigma: {sigma}")
-
-    d1 = (math.log(S / K) + (r + 0.5 * sigma ** 2) * T) / (sigma * math.sqrt(T))
-    d2 = d1 - sigma * math.sqrt(T)
-
-    print(f"d1: {d1}, d2: {d2}")
-
-    if option_type == 'call':
-        option_price = (S * norm.cdf(d1) - K * math.exp(-r * T) * norm.cdf(d2))
-    elif option_type == 'put':
-        option_price = (K * math.exp(-r * T) * norm.cdf(-d2) - S * norm.cdf(-d1))
-    else:
-        raise ValueError("option_type must be 'call' or 'put'")
-
-    print(f"Option Price: {option_price}")
-
-    return option_price
-# <-
-
-
-def calculate_option_prices(options_data, options_type, stock_price, risk_free_rate):
-    current_date = datetime.datetime.utcnow().date()
-    eastern = pytz.timezone('US/Eastern')
-    current_datetime_est = datetime.datetime.now(eastern)
-
-    calculated_prices = []
-
-    for option in options_data:
-        strike_price = float(option.get('legs')[0]['strike_price'])
-        expiration_date = datetime.datetime.strptime(option.get('legs')[0]['expiration_date'], '%Y-%m-%d').date()
-        days_to_expiration = (expiration_date - current_date).days
-        time_to_expiration = days_to_expiration / 365.0
-        implied_volatility = float(option.get('implied_volatility')) / 100.0  # Convert percentage to decimal
-        option_price = black_scholes(strike_price, stock_price, time_to_expiration, risk_free_rate, implied_volatility, options_type)
-        option['calculated_price'] = option_price
-
-        calculated_prices.append(option)
-
-    return calculated_prices
 
 
 def options_stop_limit(positionEffect, creditOrDebit, limitPrice, stopPrice, symbol, quantity, expirationDate, strike,ac,type):
@@ -220,7 +132,6 @@ def options_stop_limit(positionEffect, creditOrDebit, limitPrice, stopPrice, sym
                                               stopPrice, symbol, quantity, expirationDate,
                                               strike, optionType=type, account_number=ac,
                                               timeInForce='gtc', jsonify=True)
-    print(stop_limit)
     return stop_limit
 
 
@@ -238,40 +149,110 @@ def round_to_nearest_half(price):
     return rounded_price
 
 
+def is_market_open():
+    # Define the EST timezone
+    est = pytz.timezone('US/Eastern')
+
+    # Get the current time in EST
+    now = datetime.now(est)
+    current_time = now.time()
+    current_day = now.date()
+    weekday = now.weekday()  # Monday is 0 and Sunday is 6
+
+    # Define the market hours
+    market_open = time(9, 30)   # 9:30 AM
+    market_close = time(16, 0)  # 4:00 PM
+
+    # List of market holidays (add more as needed)
+    holidays = [
+        '2024-01-01',  # New Year's Day
+        '2024-01-15',  # Martin Luther King Jr. Day
+        '2024-02-19',  # Presidents' Day
+        '2024-03-29',  # Good Friday
+        '2024-05-27',  # Memorial Day
+        '2024-06-19',  # Juneteenth National Independence Day
+        '2024-07-04',  # Independence Day
+        '2024-09-02',  # Labor Day
+        '2024-11-28',  # Thanksgiving Day
+        '2024-12-25',  # Christmas Day
+    ]
+
+    # Check if today is a holiday
+    today_str = current_day.strftime('%Y-%m-%d')
+    if today_str in holidays:
+        return False
+
+    # Check if today is a weekday (Monday to Friday)
+    if weekday < 0 or weekday > 4:
+        return False
+
+    # Check if the current time is within market hours
+    if market_open <= current_time < market_close:
+        return True
+    else:
+        return False
+
+
+def format_order_message(order,stock_position,option):
+    symbol = order.get('symbol')
+    fees = order.get('fees')
+    price = order.get('price')
+    quantity = order.get('quantity')
+    side = order.get('side')
+    state = order.get('updstateated_at')
+
+    message = (
+        f"\nOrder Data for {option}:\n"
+        f"----------------------\n"
+        f"Symbol: {symbol}\n"
+        f"Price: {price}\n"
+        f"Quantity: {quantity}\n"
+        f"Fees: {fees}\n"
+        f"Type: {stock_position}\n"
+        f"Side: {side}\n"
+        f"State: {state}\n"
+        f"----------------------\n",
+    )
+
+    return message
+
+
 def find_options(position, cOrd,symbol, qtity, 
                  price1, price2, strike, expiration, 
-                 option_type, type, info, app, settings):
+                 option_type, type, app, settings):
     
     rh_login(app,settings)
-
-    if price1:
-        rounded_price = round_to_nearest_half(price1)
-        find_trades = find_options_by_strike(
-            symbol, strikePrice=str(rounded_price), optionType=type, info=info
-        )
-        while not find_trades:
-            if option_type.lower() == "call":  # ITM
-                rounded_price = round_down(float(rounded_price))
-            elif option_type.lower() == "put":  # ITM
-                rounded_price = round_up(float(rounded_price))
-
+    if is_market_open():
+        if price1:
+            rounded_price = round_to_nearest_half(price1)
             find_trades = find_options_by_strike(
-                symbol, strikePrice=str(rounded_price), optionType=option_type, info=info
+                symbol, strikePrice=str(rounded_price), optionType=type, info=None
+            )
+            while not find_trades:
+                if option_type.lower() == "call":  # ITM
+                    rounded_price = round_down(float(rounded_price))
+                elif option_type.lower() == "put":  # ITM
+                    rounded_price = round_up(float(rounded_price))
+
+                find_trades = find_options_by_strike(
+                    symbol, strikePrice=str(rounded_price), optionType=option_type, info=None
+                )
+
+                # If rounding down or up results in the same price, break to avoid an infinite loop
+                if rounded_price == round_to_nearest_half(rounded_price):
+                    # Filter options for the next 5 days from the most recent date
+                    break
+
+            filtered_options = filter_recent_options(find_trades)
+        if strike:
+            find_trades = find_options_by_strike(
+                symbol, strikePrice=str(strike), optionType=type, info=None
             )
 
-            # If rounding down or up results in the same price, break to avoid an infinite loop
-            if rounded_price == round_to_nearest_half(rounded_price):
-                # Filter options for the next 5 days from the most recent date
-                break
-
-        filtered_options = filter_recent_options(find_trades)
-    if strike:
-        find_trades = find_options_by_strike(
-            symbol, strikePrice=str(strike), optionType=type, info=info
-        )
-
-        # Filter options for the next 5 days from the most recent date
-        filtered_options = filter_recent_options(find_trades)
+            # Filter options for the next 5 days from the most recent date
+            filtered_options = filter_recent_options(find_trades)
+    else:
+        return
 
     # Print the formatted JSON data
     formatted_filtered_options = json.dumps(filtered_options, indent=4)
@@ -300,7 +281,6 @@ def find_options(position, cOrd,symbol, qtity,
             orders = buy_options_limit(positionEffect=position,credOrdeb=cOrd,price=ask,
                               symbol=symbol,quantity=qtity,expirationDate=date,
                               strike=strike,ot=type,an=settings.get('accountid'))
-
     else:
         symbol_close = filtered_options_load[0]['chain_symbol']
         date_close = filtered_options_load[0]['expiration_date']
@@ -313,5 +293,7 @@ def find_options(position, cOrd,symbol, qtity,
                               strike=strike_close,ot=type_close,an=settings.get('accountid'))
     
     if orders: 
-        print("Sending back")
+        order_info = format_order_message(orders,position,'Options')
+        discord_message(order_info,settings)
+        
         return

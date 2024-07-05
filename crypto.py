@@ -39,22 +39,25 @@ def debug_messages(app,messages):
         return
 
 
-def format_order_message(order):
+def format_order_message(order,stock_position,options):
     symbol = order.get('symbol')
-    created_at = order.get('created_at')
+    fees = order.get('fees')
     price = order.get('price')
     quantity = order.get('quantity')
     side = order.get('side')
-    updated_at = order.get('updated_at')
+    state = order.get('updstateated_at')
 
     message = (
-        f"*Order Details*\n"
+        f"\nOrder Data for {options}:\n"
+        f"----------------------\n"
         f"Symbol: {symbol}\n"
-        f"Created At: {created_at}\n"
-        f"Price: {round(float(price),4)}\n"
-        f"Quantity: {round(float(quantity),4)}\n"
+        f"Price: {price}\n"
+        f"Quantity: {quantity}\n"
+        f"Fees: {fees}\n"
+        f"Type: {stock_position}\n"
         f"Side: {side}\n"
-        f"Updated At: {updated_at}\n"
+        f"State: {state}\n"
+        f"----------------------\n",
     )
 
     return message
@@ -76,10 +79,6 @@ def extract_order_details(order_response):
         'side': side,
         'updated_at': updated_at
     }
-
-
-def crypto_orders():
-    get_all_crypto_orders(info=None)
 
 
 def crypto_order(symbol, quantity, price, stock_type, stock_position, app=None):
@@ -202,11 +201,11 @@ def crypto_order(symbol, quantity, price, stock_type, stock_position, app=None):
     return orders
 
 
-def crypto_robinhood(symbol, quantity, price, stock_type, stock_position, app, settings):
+def crypto_robinhood(symbol, quantity, price, stock_type, stock_position, settings, app):
     rh_login(app,settings)
     creating_order = crypto_order(symbol, quantity, price, stock_type, stock_position, app)
     if creating_order:
         order_details = extract_order_details(creating_order)
-        order_info = format_order_message(order_details)
+        order_info = format_order_message(order_details,stock_position,'Crypto')
         discord_message(order_info,settings)
         debug_messages(app,order_info)

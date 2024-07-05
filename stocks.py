@@ -1,6 +1,7 @@
 from robinhood.authentication import login
 from robinhood.orders import order_sell_market, order_buy_limit, \
-    order_sell_limit, order_buy_market
+    order_sell_limit, order_buy_market, order_buy_fractional_by_quantity, \
+    order_sell_fractional_by_quantity
 from discord import SyncWebhook
 
 
@@ -37,46 +38,58 @@ def rh_login(app,settings):
         pass
 
 
-def stock_limit_buy_order(symbol, quantity, limitPrice, exHours, ac):
-    orders = order_buy_limit(symbol, quantity, limitPrice, account_number=ac,
-                                    timeInForce='gtc', extendedHours=exHours, jsonify=True)
-    return orders
+def format_order_message(order,stock_position,option):
+    symbol = order.get('symbol')
+    fees = order.get('fees')
+    price = order.get('price')
+    quantity = order.get('quantity')
+    side = order.get('side')
+    state = order.get('updstateated_at')
+
+    message = (
+        f"\nOrder Data for {option}:\n"
+        f"----------------------\n"
+        f"Symbol: {symbol}\n"
+        f"Price: {price}\n"
+        f"Quantity: {quantity}\n"
+        f"Fees: {fees}\n"
+        f"Type: {stock_position}\n"
+        f"Side: {side}\n"
+        f"State: {state}\n"
+        f"----------------------\n",
+    )
+
+    return message
 
 
-def stock_limit_sell_order(symbol, quantity, limitPrice, exHours, ac):
-    orders = order_sell_limit(symbol, quantity, limitPrice, account_number=ac,
-                                    timeInForce='gtc', extendedHours=exHours, jsonify=True)
-    return orders
-
-
-def stock_market_sell_order(symbol, quantity, exHours, ac):
-    orders = order_sell_market(symbol, quantity, account_number=ac,
-                                    timeInForce='gtc', extendedHours=exHours, jsonify=True)
-    return orders
-
-
-def stock_market_buy_order(symbol, quantity, exHours, ac):
-    orders = order_buy_market(symbol, quantity, account_number=ac,
-                                    timeInForce='gtc', extendedHours=exHours, jsonify=True)
-    return orders
-
-
-def find_stocks(position=None, symbol=None, qtity=None, price1=None, 
-                 type=None, app=None, settings=None):
-    
+def find_stocks(position, symbol, qtity, price1, type, app, settings):
     rh_login(app,settings)
 
     if position == 'market':
         if type == 'buy':
-            order = stock_market_buy_order(symbol,qtity,False,settings.get('accountid'))
+            if qtity < '1.0':
+                order = order_buy_fractional_by_quantity(symbol, float(qtity), account_number=settings.get('accountid'), timeInForce='gfd', extendedHours=False, jsonify=True)
+            else:
+                order = order_buy_market(symbol, float(qtity), account_number=settings.get('accountid'),timeInForce='gtc', extendedHours=False, jsonify=True)
         else:
-            order = stock_market_sell_order(symbol,qtity,False,settings.get('accountid'))
+            if qtity < '1.0':
+                order = order_sell_fractional_by_quantity(symbol, float(qtity), account_number=settings.get('accountid'), timeInForce='gfd', priceType='bid_price',extendedHours=False, jsonify=True,market_hours='extendedHours')
+            else:
+                order = order_sell_market(symbol, float(qtity), account_number=settings.get('accountid'),timeInForce='gtc', extendedHours=False, jsonify=True)
     else:
         if type == 'buy':
-            order = stock_limit_buy_order(symbol,qtity,price1,False,settings.get('accountid'))
+            if qtity < '1.0':
+                order = order_buy_fractional_by_quantity(symbol, float(qtity), account_number=settings.get('accountid'), timeInForce='gfd', extendedHours=False, jsonify=True)
+            else:
+                order = order_buy_limit(symbol, float(qtity), price1, account_number=settings.get('accountid'),timeInForce='gtc', extendedHours=False, jsonify=True)
         else:
-            order = stock_limit_sell_order(symbol,qtity,price1,False,settings.get('accountid'))
+            if qtity < '1.0':
+                order = order_sell_fractional_by_quantity(symbol, float(qtity), account_number=settings.get('accountid'), timeInForce='gfd', priceType='bid_price',extendedHours=False, jsonify=True,market_hours='extendedHours')
+            else:
+                order = order_sell_limit(symbol, float(qtity), price1, account_number=settings.get('accountid'),timeInForce='gtc', extendedHours=False, jsonify=True)
     
     if order: 
-        print("Sending back")
+        order_info = format_order_message(order,position,'Stocks')
+        discord_message(order_info,settings)
+        
         return
