@@ -55,8 +55,22 @@ Installation:
     - Rename the `example.ini` file to `config.ini`.
     - Fill in the fields in the file to your settings
       
+5. **Deploy the App:**
+    - First, deploy it to GitHub, which will then deploy it to DigitalOcean:
+        ```sh
+        git add .
+        git commit -m "Initial commit"
+        git push -u origin master:main
+        ```
 
-5. **Run the Application:**
+6. **Login to Robinhood:**
+    - 2FA will need to be activated on your Robinhood account so you can type in the 6 digit code.
+    - Run the login.py file to login to your Robinhood account:
+        ```sh
+        python3 login.py
+        ```
+
+6. **Run the Application:**
     - Deploy the app on DigitalOcean. This will run the Flask application, waiting for new alerts to come in.
     - To run the webhook with TradingView, you will need a paid TradingView account. Change the alert message to suit your requirements.
       
