@@ -88,4 +88,4 @@ Insert these messages into the TradingView alert message box, and then change th
     PayPal          - @MatthiasTovar
     Solana (Crypto) - E2VUz9PzabS547pxBJnFZCCDT3VtqdhnrMgyKc7ksPE7
     ETH (Crypto)    - 0xeCcDF3B9fD507bf3a7B196e093Dc7FC0114CfDb3
-    BTC (Crypto)    - bc1qu06sj3z4dkllkup2ew42gh523u3usvw0p2wpk2 **
+    BTC (Crypto)    - bc1qu06sj3z4dkllkup2ew42gh523u3usvw0p2wpk2
