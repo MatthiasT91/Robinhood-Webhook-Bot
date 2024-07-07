@@ -80,23 +80,6 @@ TradingView Alert Message:
 
 Insert these messages into the TradingView alert message box, and then change the webhook URL in the notifications panel. Messages can be found in the **alert_options_info.txt** file.
 
-Deployment to a New Server:
----------------------------
-
-To deploy this application to a new server and set up webhooks from TradingView, follow these steps:
-
-1. **Deploy the App:**
-    - First, deploy it to GitHub, which will then deploy it to DigitalOcean:
-        ```sh
-        git add .
-        git commit -m "Initial commit"
-        git push -u origin master:main
-        ```
-
-2. **App created on DigitalOcean:**
-    - Now you should have your new project on GitHub and on DigitalOcean.
-
----
 
 **Enjoy managing your trading data with FCT's Robinhoods Options/Stock/Crypto Webhook Bot! This `README.txt` file provides clear instructions for setting up the project, configuring environment variables, installing dependencies, and deploying the application to a new server.**
 
