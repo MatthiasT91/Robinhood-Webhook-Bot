@@ -59,14 +59,17 @@ def handle_disconnect():
 @app.route('/webhook', methods=['POST'])
 def handle_webhook():
     try:
-        # Attempt to parse JSON data
         data = None
-        try:
-            data = request.json
-        except Exception:
-            data = json.loads(request.data)
 
-        app.logger.info(data)
+        if not request.data:
+            raise ValueError("Empty payload received")
+
+        try:
+            data = request.get_json()
+            if data is None:
+                raise ValueError("Invalid JSON received")
+        except Exception as e:
+            raise ValueError(f"Error parsing JSON: {str(e)}")
 
         settings = read_config()
             
@@ -82,43 +85,51 @@ def handle_webhook():
         stock_expiration = data.get('expiration', None)
         stock_strike = data.get('strike', None)
 
-        
         if stockOrOptions == 'options':
-            app.logger.info("Heading to the Ooptions Function")
-            if stock_type == 'stop_limit':
-                find_options(position=str(stock_position), cOrd=str(stock_creditOrdebit), symbol=str(stock_symbol), 
-                     qtity=str(stock_quantity), price1=str(stock_price1), price2=str(stock_price2), strike=str(stock_strike),
-                     expiration=str(stock_expiration), option_type=str(stock_option_type), type=str(stock_type), ac='120853833', app=None)
+            #if stock_type == 'stop_limit':
+            #    find_options(position=str(stock_position), cOrd=str(stock_creditOrdebit), symbol=str(stock_symbol), 
+            #         qtity=str(stock_quantity), price1=str(stock_price1), price2=str(stock_price2), strike=str(stock_strike),
+            #         expiration=str(stock_expiration), option_type=str(stock_option_type), type=str(stock_type), ac='120853833', app=None)
 
             result = find_options(position=str(stock_position), cOrd=str(stock_creditOrdebit), symbol=str(stock_symbol), 
                  qtity=str(stock_quantity), price1=str(stock_price1), price2=str(stock_price2), 
                  strike=str(stock_strike), expiration=str(stock_expiration), 
                  option_type=str(stock_option_type), type=str(stock_type), app=app, settings=settings)
-            
-            write_orders_to_file([result])
-            
-            # Emit the result to WebSocket clients
-            socketio.emit('trading_data', {'symbol': stock_symbol, 'price': stock_price1, 'result': result})
+            if result:
+                write_orders_to_file([result])
+            else:
+                app.logger.info("Waiting for valid order creation...")
    
-        elif stockOrOptions == 'crypto':
-            app.logger.info("Heading to the Crypto Function")
-            creating_order = crypto_robinhood(stock_symbol, stock_quantity, stock_price1, 
-                                              stock_type, stock_position, 
-                                              settings, app)
-            if creating_order:
-                order_details = extract_order_details(creating_order)
-                app.logger.info(order_details)
+        if stockOrOptions == 'crypto':
+            results = crypto_robinhood(stock_symbol, stock_quantity, stock_price1, 
+                        stock_type, stock_position, 
+                        settings, app)
+            if results:
+                write_orders_to_file([results])
+            else:
+                app.logger.info("Waiting for valid order creation...")
 
+        if stockOrOptions == 'stocks':
+            resultss = find_stocks(position=stock_position,symbol=stock_symbol,
+                        qtity=stock_quantity,price1=stock_price1,
+                        type=stock_type,app=app,settings=settings)
+            if resultss:
+                write_orders_to_file([resultss])
             else:
                 app.logger.info("Waiting for valid order creation...")
-        else:
-            app.logger.info("Heading to the Stock Function")
-            if stockOrOptions == 'stocks':
-                find_stocks(position=stock_position,symbol=stock_symbol,
-                            qtity=stock_quantity,price1=stock_price1,
-                            type=stock_type,app=app,settings=settings)
-            else:
-                app.logger.info("Waiting for valid order creation...")
+        
+        data = {}
+        stockOrOptions = None
+        stock_position = None
+        stock_creditOrdebit = None
+        stock_symbol = None
+        stock_quantity = None
+        stock_option_type = None
+        stock_type = None
+        stock_price1 = None
+        stock_price2 = None
+        stock_expiration = None
+        stock_strike = None
 
         app.logger.info("Waiting for more messages...")
         return jsonify({'message': 'Webhook received and processed successfully'}), 200
