@@ -193,26 +193,27 @@ def is_market_open():
         return False
 
 
-def format_order_message(order,stock_position,option):
-    symbol = order.get('symbol')
-    fees = order.get('fees')
-    price = order.get('price')
-    quantity = order.get('quantity')
-    side = order.get('side')
-    state = order.get('updstateated_at')
+def format_order_message(order,symbol,stock_position,option):
+    price = float(order.get('premium'))
+    quantity = int(order.get('legs')[0].get('ratio_quantity'))
+    side = str(order.get('legs')[0].get('side'))
+    state = str(order.get('trigger'))
+    net = float(order.get('estimated_total_net_amount'))
+    if stock_position == 'close':
+        fees = price - net
+    else:
+        fees = net - price
 
-    message = (
-        f"\nOrder Data for {option}:\n"
+    message = f"\nOrder Data for {option}:\n" \
+        f"----------------------\n" \
+        f"Symbol: {symbol}\n" \
+        f"Price: ${round(price,2):,}\n" \
+        f"Quantity: {quantity}\n" \
+        f"Fees: ${round(fees,2):,}\n" \
+        f"Type: {stock_position.upper()}\n" \
+        f"Side: {side.upper()}\n" \
+        f"State: {state.upper()}\n" \
         f"----------------------\n"
-        f"Symbol: {symbol}\n"
-        f"Price: {price}\n"
-        f"Quantity: {quantity}\n"
-        f"Fees: {fees}\n"
-        f"Type: {stock_position}\n"
-        f"Side: {side}\n"
-        f"State: {state}\n"
-        f"----------------------\n",
-    )
 
     return message
 
@@ -293,7 +294,7 @@ def find_options(position, cOrd,symbol, qtity,
                               strike=strike_close,ot=type_close,an=settings.get('accountid'))
     
     if orders: 
-        order_info = format_order_message(orders,position,'Options')
+        order_info = format_order_message(orders,symbol,position,'Options')
         discord_message(order_info,settings)
         
         return
